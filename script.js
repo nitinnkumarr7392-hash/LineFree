@@ -1,188 +1,127 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
+let places = JSON.parse(localStorage.getItem("places")) || [
+{name:"City Hospital",category:"Hospital",updates:[]},
+{name:"State Bank",category:"Bank",updates:[]},
+{name:"Hanuman Temple",category:"Temple",updates:[]},
+{name:"Aadhar Center",category:"Govt",updates:[]}
+];
+
+let selectedPlace=null;
+let currentCategory="All";
+
+const container=document.getElementById("placesContainer");
+const modal=document.getElementById("modal");
+const modalTitle=document.getElementById("modalTitle");
+const peopleInput=document.getElementById("peopleInput");
+const categorySelect=document.getElementById("categorySelect");
+
+setTimeout(()=>{
+document.querySelector(".app").classList.remove("hidden");
+},2500);
+
+function saveData(){
+localStorage.setItem("places",JSON.stringify(places));
 }
 
-body{
-background:#f2f4f8;
-color:#222;
-transition:0.3s;
+function calculateStatus(avg){
+if(avg<=5) return {text:"Short Line",class:"green"};
+if(avg<=15) return {text:"Medium Line",class:"yellow"};
+return {text:"Long Line",class:"red"};
 }
 
-body.dark{
-background:#121212;
-color:#fff;
+function render(){
+container.innerHTML="";
+places
+.filter(p=>currentCategory==="All"||p.category===currentCategory)
+.forEach(place=>{
+let avg=place.updates.length
+?Math.round(place.updates.reduce((a,b)=>a+b,0)/place.updates.length)
+:0;
+
+let status=calculateStatus(avg);
+
+container.innerHTML+=`
+<div class="place-card">
+<h3>${place.name}</h3>
+<small>${place.category}</small>
+<div class="status ${status.class}">
+${status.text} (${avg} people)
+</div>
+<small>Updated: ${place.updates.length?new Date().toLocaleString():"No updates"}</small>
+<button onclick="openUpdate('${place.name}')">Update Queue</button>
+</div>
+`;
+});
 }
 
-.hidden{
-display:none;
+function openUpdate(name){
+selectedPlace=name;
+modalTitle.innerText=name;
+categorySelect.style.display="none";
+modal.classList.remove("hidden");
 }
 
-.splash{
-position:fixed;
-inset:0;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-background:#3498db;
-color:white;
-z-index:10;
-animation:fadeOut 2.5s forwards 2s;
+function openAdd(){
+selectedPlace=null;
+modalTitle.innerText="Add New Place";
+categorySelect.style.display="block";
+modal.classList.remove("hidden");
 }
 
-@keyframes fadeOut{
-to{opacity:0;visibility:hidden;}
+function closeModal(){
+modal.classList.add("hidden");
+peopleInput.value="";
 }
 
-.app{
-max-width:500px;
-margin:auto;
-padding:15px;
+function submit(){
+let count=parseInt(peopleInput.value);
+
+if(selectedPlace){
+let place=places.find(p=>p.name===selectedPlace);
+if(!isNaN(count)) place.updates.push(count);
+}else{
+let name=peopleInput.value;
+let category=categorySelect.value;
+if(name){
+places.push({name:name,category:category,updates:[]});
+}
 }
 
-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:15px;
+saveData();
+render();
+closeModal();
 }
 
-header h2{
-font-weight:700;
-}
+document.getElementById("submitBtn").onclick=submit;
+document.getElementById("closeBtn").onclick=closeModal;
+document.getElementById("addPlaceBtn").onclick=openAdd;
 
-header button{
-background:none;
-border:none;
-font-size:20px;
-cursor:pointer;
-}
+document.querySelectorAll(".categories button").forEach(btn=>{
+btn.onclick=()=>{
+document.querySelectorAll(".categories button").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+currentCategory=btn.dataset.cat;
+render();
+};
+});
 
-.search-section{
-display:flex;
-gap:10px;
-margin-bottom:15px;
-}
+document.getElementById("searchInput").addEventListener("input",function(){
+let value=this.value.toLowerCase();
+container.innerHTML="";
+places
+.filter(p=>p.name.toLowerCase().includes(value))
+.forEach(place=>{
+container.innerHTML+=`
+<div class="place-card">
+<h3>${place.name}</h3>
+<small>${place.category}</small>
+<button onclick="openUpdate('${place.name}')">Update Queue</button>
+</div>
+`;
+});
+});
 
-.search-section input{
-flex:1;
-padding:10px;
-border-radius:10px;
-border:none;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
-}
+document.getElementById("themeToggle").onclick=()=>{
+document.body.classList.toggle("dark");
+};
 
-.search-section button{
-width:45px;
-border:none;
-border-radius:10px;
-background:#3498db;
-color:white;
-font-size:20px;
-cursor:pointer;
-}
-
-.categories{
-display:flex;
-gap:8px;
-overflow:auto;
-margin-bottom:15px;
-}
-
-.categories button{
-padding:6px 12px;
-border:none;
-border-radius:20px;
-background:#ddd;
-cursor:pointer;
-font-size:12px;
-}
-
-.categories button.active{
-background:#3498db;
-color:white;
-}
-
-.place-card{
-background:white;
-padding:15px;
-border-radius:15px;
-margin-bottom:12px;
-box-shadow:0 4px 10px rgba(0,0,0,0.08);
-transition:0.3s;
-}
-
-body.dark .place-card{
-background:#1e1e1e;
-}
-
-.place-card:hover{
-transform:translateY(-3px);
-}
-
-.status{
-font-weight:600;
-margin-top:5px;
-}
-
-.green{color:#27ae60;}
-.yellow{color:#f39c12;}
-.red{color:#e74c3c;}
-
-.place-card button{
-margin-top:8px;
-padding:6px 10px;
-border:none;
-border-radius:8px;
-background:#3498db;
-color:white;
-cursor:pointer;
-font-size:12px;
-}
-
-.modal{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,0.5);
-display:flex;
-justify-content:center;
-align-items:center;
-}
-
-.modal-box{
-background:white;
-padding:20px;
-border-radius:15px;
-width:90%;
-max-width:350px;
-display:flex;
-flex-direction:column;
-gap:10px;
-}
-
-body.dark .modal-box{
-background:#1e1e1e;
-}
-
-.modal-box input,
-.modal-box select{
-padding:10px;
-border-radius:8px;
-border:none;
-}
-
-.modal-box button{
-padding:8px;
-border:none;
-border-radius:8px;
-background:#3498db;
-color:white;
-cursor:pointer;
-}
-
-.modal-box .cancel{
-background:gray;
-}
+render();

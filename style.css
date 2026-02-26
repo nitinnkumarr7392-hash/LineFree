@@ -1,110 +1,188 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', sans-serif;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
 }
 
-body {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+body{
+background:#f2f4f8;
+color:#222;
+transition:0.3s;
 }
 
-.container {
-    width: 100%;
-    padding: 20px;
+body.dark{
+background:#121212;
+color:#fff;
 }
 
-.card {
-    background: white;
-    padding: 30px;
-    border-radius: 16px;
-    max-width: 400px;
-    margin: auto;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-    text-align: center;
-    animation: fadeIn 0.5s ease-in-out;
+.hidden{
+display:none;
 }
 
-h1 {
-    margin-bottom: 5px;
-    color: #333;
+.splash{
+position:fixed;
+inset:0;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+background:#3498db;
+color:white;
+z-index:10;
+animation:fadeOut 2.5s forwards 2s;
 }
 
-.subtitle {
-    color: #777;
-    margin-bottom: 25px;
+@keyframes fadeOut{
+to{opacity:0;visibility:hidden;}
 }
 
-.input-group {
-    margin-bottom: 15px;
-    text-align: left;
+.app{
+max-width:500px;
+margin:auto;
+padding:15px;
 }
 
-label {
-    font-size: 14px;
-    color: #555;
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:15px;
 }
 
-input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    margin-top: 5px;
-    font-size: 16px;
+header h2{
+font-weight:700;
 }
 
-input:focus {
-    outline: none;
-    border-color: #667eea;
+header button{
+background:none;
+border:none;
+font-size:20px;
+cursor:pointer;
 }
 
-.options {
-    margin-bottom: 15px;
-    text-align: left;
-    font-size: 14px;
+.search-section{
+display:flex;
+gap:10px;
+margin-bottom:15px;
 }
 
-button {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
-    background: #667eea;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s;
+.search-section input{
+flex:1;
+padding:10px;
+border-radius:10px;
+border:none;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
-button:hover {
-    background: #5563c1;
+.search-section button{
+width:45px;
+border:none;
+border-radius:10px;
+background:#3498db;
+color:white;
+font-size:20px;
+cursor:pointer;
 }
 
-.result {
-    margin-top: 25px;
-    padding: 15px;
-    border-radius: 10px;
-    background: #f3f4f6;
-    display: none;
+.categories{
+display:flex;
+gap:8px;
+overflow:auto;
+margin-bottom:15px;
 }
 
-.result h2 {
-    font-size: 16px;
-    color: #555;
+.categories button{
+padding:6px 12px;
+border:none;
+border-radius:20px;
+background:#ddd;
+cursor:pointer;
+font-size:12px;
 }
 
-#perPersonAmount {
-    font-size: 28px;
-    font-weight: bold;
-    color: #333;
+.categories button.active{
+background:#3498db;
+color:white;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.place-card{
+background:white;
+padding:15px;
+border-radius:15px;
+margin-bottom:12px;
+box-shadow:0 4px 10px rgba(0,0,0,0.08);
+transition:0.3s;
+}
+
+body.dark .place-card{
+background:#1e1e1e;
+}
+
+.place-card:hover{
+transform:translateY(-3px);
+}
+
+.status{
+font-weight:600;
+margin-top:5px;
+}
+
+.green{color:#27ae60;}
+.yellow{color:#f39c12;}
+.red{color:#e74c3c;}
+
+.place-card button{
+margin-top:8px;
+padding:6px 10px;
+border:none;
+border-radius:8px;
+background:#3498db;
+color:white;
+cursor:pointer;
+font-size:12px;
+}
+
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.5);
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.modal-box{
+background:white;
+padding:20px;
+border-radius:15px;
+width:90%;
+max-width:350px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+body.dark .modal-box{
+background:#1e1e1e;
+}
+
+.modal-box input,
+.modal-box select{
+padding:10px;
+border-radius:8px;
+border:none;
+}
+
+.modal-box button{
+padding:8px;
+border:none;
+border-radius:8px;
+background:#3498db;
+color:white;
+cursor:pointer;
+}
+
+.modal-box .cancel{
+background:gray;
 }
